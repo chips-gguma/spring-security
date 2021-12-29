@@ -3,6 +3,7 @@ package com.sp.fc.web.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -34,5 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
+    // 스프링 시큐리티는 기본적으로 모든 페이지를 막아두고 시작
+    // 홈페이지는 열어두고 싶음
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests((requests) ->
+                requests.antMatchers("/").permitAll() // permitAll() 모든 사람에게 접근 허용
+                        .anyRequest().authenticated()
+        );
+        http.formLogin();
+        http.httpBasic();    }
 }
