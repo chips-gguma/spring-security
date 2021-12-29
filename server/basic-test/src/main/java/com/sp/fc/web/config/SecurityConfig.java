@@ -1,6 +1,7 @@
 package com.sp.fc.web.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,7 +11,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@EnableWebSecurity(debug = true)
+//@Order(1) // 두 개 이상의 필터체인을 구성할 때 순서 설정 (1 : 첫 번째...)
+@EnableWebSecurity(debug = true) // 어떤 필터들을 거쳤는지 보여줌
 @EnableGlobalMethodSecurity(prePostEnabled = true) // prePost로 권한 체크 수행 (admin 접근 불가)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -39,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 홈페이지는 열어두고 싶음
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.antMatcher("/api/**"); // 어떤 request에 대해서 필터체인이 동작할 것인지 설정, 필터체인 여러 개 구성 가능
         http.authorizeRequests((requests) ->
                 requests.antMatchers("/").permitAll() // permitAll() 모든 사람에게 접근 허용
                         .anyRequest().authenticated()
